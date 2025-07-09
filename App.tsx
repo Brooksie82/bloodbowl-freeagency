@@ -7,11 +7,13 @@ import PlayerPoolScreen from './screens/PlayerPoolScreen';
 import AddPlayerScreen from './screens/AddPlayerScreen';
 import { Player } from './types/Player';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+const AppContent = () => {
   const [players, setPlayers] = useState<Player[]>([]);
+  const { theme } = useTheme();
 
   const handleAddPlayer = (player: Player) => {
     setPlayers((prev) => [...prev, player]);
@@ -42,13 +44,16 @@ export default function App() {
           tabBarIconStyle: {
             marginTop: 6,
           },
-          tabBarActiveTintColor: '#4a90e2',
-          tabBarInactiveTintColor: '#888',
+          tabBarActiveTintColor: theme.accent,
+          tabBarInactiveTintColor: theme.textSecondary,
           headerShown: false,
           tabBarStyle: {
             height: 60,
             paddingBottom: 4,
             paddingTop: 4,
+            backgroundColor: theme.card,
+            borderTopColor: theme.border,
+            borderTopWidth: 1,
           },
         })}
       >
@@ -62,5 +67,13 @@ export default function App() {
       </Tab.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
+  );
+};
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

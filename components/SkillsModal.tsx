@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, Modal, TouchableOpacity, ScrollView } from 'react-native';
-import { colors } from '../styles/colors';
+import { useTheme } from '../contexts/ThemeContext';
 import { SKILL_CATEGORIES } from '../types/skills';
 import { CHECKBOX_SIZE } from '../styles/forms';
 import { FONT_SIZES } from '../styles/typography';
@@ -20,6 +20,8 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
   onSkillsChange,
   onClose,
 }) => {
+  const { theme } = useTheme();
+
   const handleSkillToggle = (skill: string) => {
     onSkillsChange(
       selectedSkills.includes(skill)
@@ -30,30 +32,33 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
 
   return (
     <Modal visible={visible} animationType="slide">
-      <View style={styles.modalContainer}>
-        <Text style={styles.modalTitle}>Select Skills</Text>
+      <View style={[styles.modalContainer, { backgroundColor: theme.background }]}>
+        <Text style={[styles.modalTitle, { color: theme.text }]}>Select Skills</Text>
         <ScrollView>
           {SKILL_CATEGORIES.map((cat) => (
             <View key={cat.category} style={styles.skillCategory}>
-              <Text style={styles.skillCategoryTitle}>{cat.category}</Text>
+              <Text style={[styles.skillCategoryTitle, { color: theme.accent }]}>{cat.category}</Text>
               {cat.skills.map((skill) => (
                 <TouchableOpacity
                   key={skill}
                   style={styles.checkboxRow}
                   onPress={() => handleSkillToggle(skill)}
                 >
-                  <View style={styles.checkbox}>
+                  <View style={[styles.checkbox, { 
+                    borderColor: theme.accent, 
+                    backgroundColor: theme.card 
+                  }]}>
                     {selectedSkills.includes(skill) && (
-                      <FontAwesome name="check" size={CHECKBOX_SIZE - 10} color={colors.primary} />
+                      <FontAwesome name="check" size={CHECKBOX_SIZE - 10} color={theme.accent} />
                     )}
                   </View>
-                  <Text style={styles.checkboxLabel}>{skill}</Text>
+                  <Text style={[styles.checkboxLabel, { color: theme.text }]}>{skill}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           ))}
         </ScrollView>
-        <Button title="Done" onPress={onClose} color={colors.primary} />
+        <Button title="Done" onPress={onClose} color={theme.accent} />
       </View>
     </Modal>
   );
@@ -62,7 +67,6 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: colors.background,
     padding: PADDING.modal,
     paddingTop: PADDING.modalTop,
   },
@@ -70,7 +74,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.modalTitle,
     fontWeight: 'bold',
     marginBottom: 24,
-    color: colors.text,
     textAlign: 'center',
   },
   skillCategory: {
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.skillCategoryTitle,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: colors.primary,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -91,22 +93,13 @@ const styles = StyleSheet.create({
     width: CHECKBOX_SIZE,
     height: CHECKBOX_SIZE,
     borderWidth: 2,
-    borderColor: colors.primary,
     borderRadius: 4,
     marginRight: PADDING.checkbox,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.card,
-  },
-  checkboxChecked: {
-    width: CHECKBOX_SIZE - 8,
-    height: CHECKBOX_SIZE - 8,
-    backgroundColor: colors.primary,
-    borderRadius: 2,
   },
   checkboxLabel: {
     fontSize: FONT_SIZES.checkboxLabel,
-    color: colors.text,
   },
 });
 
