@@ -5,6 +5,7 @@ import { SKILL_CATEGORIES } from '../types/skills';
 import { CHECKBOX_SIZE } from '../styles/forms';
 import { FONT_SIZES } from '../styles/typography';
 import { PADDING } from '../styles/layout';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 interface SkillsModalProps {
   visible: boolean;
@@ -42,7 +43,9 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
                   onPress={() => handleSkillToggle(skill)}
                 >
                   <View style={styles.checkbox}>
-                    {selectedSkills.includes(skill) && <View style={styles.checkboxChecked} />}
+                    {selectedSkills.includes(skill) && (
+                      <FontAwesome name="check" size={CHECKBOX_SIZE - 10} color={colors.primary} />
+                    )}
                   </View>
                   <Text style={styles.checkboxLabel}>{skill}</Text>
                 </TouchableOpacity>
