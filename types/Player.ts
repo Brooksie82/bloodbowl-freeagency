@@ -5,4 +5,6 @@ export interface Player {
   level: string;
   skills: string;
   value: string;
+  bidCount?: number;
+  hasUserBid?: boolean;
 } 

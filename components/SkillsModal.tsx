@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Button, Modal, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { SKILL_CATEGORIES } from '../types/skills';
 import { CHECKBOX_SIZE } from '../styles/forms';
@@ -21,6 +21,30 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
   onClose,
 }) => {
   const { theme } = useTheme();
+  const [slideAnim] = useState(new Animated.Value(0));
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setIsAnimating(true);
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsAnimating(false);
+      });
+    } else {
+      setIsAnimating(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsAnimating(false);
+      });
+    }
+  }, [visible, slideAnim]);
 
   const handleSkillToggle = (skill: string) => {
     onSkillsChange(
@@ -30,11 +54,33 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
     );
   };
 
+  const slideInTransform = {
+    transform: [
+      {
+        translateX: slideAnim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [400, 0],
+        }),
+      },
+    ],
+  };
+
+  // Only render if visible or animating
+  if (!visible && !isAnimating) return null;
+
   return (
-    <Modal visible={visible} animationType="slide">
-      <View style={[styles.modalContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.modalTitle, { color: theme.text }]}>Select Skills</Text>
-        <ScrollView>
+    <View style={styles.overlay}>
+      <Animated.View style={[styles.sidebar, { backgroundColor: theme.background }, slideInTransform]}>
+        {/* Header */}
+        <View style={[styles.header, { borderBottomColor: theme.border }]}>
+          <TouchableOpacity onPress={onClose} style={styles.backButton}>
+            <FontAwesome name="arrow-left" size={20} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Select Skills</Text>
+        </View>
+
+        {/* Skills Content */}
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {SKILL_CATEGORIES.map((cat) => (
             <View key={cat.category} style={styles.skillCategory}>
               <Text style={[styles.skillCategoryTitle, { color: theme.accent }]}>{cat.category}</Text>
@@ -58,23 +104,49 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
             </View>
           ))}
         </ScrollView>
-        <Button title="Done" onPress={onClose} color={theme.accent} />
-      </View>
-    </Modal>
+      </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    padding: PADDING.modal,
-    paddingTop: PADDING.modalTop,
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
   },
-  modalTitle: {
+  sidebar: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '85%',
+    height: '100%',
+    boxShadow: '-2px 0 3.84px rgba(0, 0, 0, 0.25)',
+    elevation: 5,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: PADDING.container,
+    paddingTop: PADDING.modalTop,
+    borderBottomWidth: 1,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 16,
+  },
+  headerTitle: {
     fontSize: FONT_SIZES.modalTitle,
     fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    padding: PADDING.container,
   },
   skillCategory: {
     marginBottom: 24,

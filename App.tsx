@@ -55,6 +55,10 @@ const AppContent = () => {
             borderTopColor: theme.border,
             borderTopWidth: 1,
           },
+          // Add smooth screen transitions
+          animationEnabled: true,
+          animationTypeForReplace: 'push',
+          animationDuration: 300,
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />

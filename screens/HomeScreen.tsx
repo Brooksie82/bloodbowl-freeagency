@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { FONT_SIZES } from '../styles/typography';
 import { PADDING } from '../styles/layout';
@@ -9,6 +9,41 @@ import ThemeSelector from '../components/ThemeSelector';
 const HomeScreen = () => {
   const { theme } = useTheme();
   const [themeModalVisible, setThemeModalVisible] = useState(false);
+  const [slideAnim] = useState(new Animated.Value(0));
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (themeModalVisible) {
+      setIsAnimating(true);
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsAnimating(false);
+      });
+    } else {
+      setIsAnimating(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setIsAnimating(false);
+      });
+    }
+  }, [themeModalVisible, slideAnim]);
+
+  const slideInTransform = {
+    transform: [
+      {
+        translateX: slideAnim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [400, 0],
+        }),
+      },
+    ],
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -22,18 +57,25 @@ const HomeScreen = () => {
         onPress={() => setThemeModalVisible(true)}
       >
         <FontAwesome name="paint-brush" size={20} color={theme.accent} />
-        <Text style={[styles.themeButtonText, { color: theme.text }]}>Customize Theme</Text>
+        <Text style={[styles.themeButtonText, { color: theme.text, marginLeft: 8 }]}>Customize Theme</Text>
       </TouchableOpacity>
 
-      <Modal visible={themeModalVisible} animationType="slide">
-        <ThemeSelector />
-        <TouchableOpacity
-          style={[styles.closeButton, { backgroundColor: theme.accent }]}
-          onPress={() => setThemeModalVisible(false)}
-        >
-          <Text style={[styles.closeButtonText, { color: theme.dominant }]}>Close</Text>
-        </TouchableOpacity>
-      </Modal>
+      {/* Theme Modal with Slide Animation */}
+      {(themeModalVisible || isAnimating) && (
+        <View style={styles.overlay}>
+          <Animated.View style={[styles.sidebar, { backgroundColor: theme.background }, slideInTransform]}>
+            <View style={[styles.header, { borderBottomColor: theme.border }]}>
+              <TouchableOpacity onPress={() => setThemeModalVisible(false)} style={styles.backButton}>
+                <FontAwesome name="arrow-left" size={20} color={theme.text} />
+              </TouchableOpacity>
+              <Text style={[styles.headerTitle, { color: theme.text }]}>Theme Settings</Text>
+            </View>
+            <View style={styles.content}>
+              <ThemeSelector />
+            </View>
+          </Animated.View>
+        </View>
+      )}
     </View>
   );
 };
@@ -62,24 +104,47 @@ const styles = StyleSheet.create({
     padding: PADDING.card,
     borderRadius: 8,
     borderWidth: 1,
-    gap: 8,
   },
   themeButtonText: {
     fontSize: FONT_SIZES.checkboxLabel,
     fontWeight: '500',
   },
-  closeButton: {
+  overlay: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
   },
-  closeButtonText: {
-    fontSize: FONT_SIZES.checkboxLabel,
+  sidebar: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '85%',
+    height: '100%',
+    boxShadow: '-2px 0 3.84px rgba(0, 0, 0, 0.25)',
+    elevation: 5,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: PADDING.container,
+    paddingTop: PADDING.modalTop,
+    borderBottomWidth: 1,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 16,
+  },
+  headerTitle: {
+    fontSize: FONT_SIZES.modalTitle,
     fontWeight: 'bold',
+    flex: 1,
+  },
+  content: {
+    flex: 1,
   },
 });
 
