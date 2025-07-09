@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Player } from '../types/Player';
 import { colors } from '../styles/colors';
+import { FONT_SIZES } from '../styles/typography';
+import { PADDING } from '../styles/layout';
 
 const PlayerCard: React.FC<{ player: Player }> = ({ player }) => (
   <View style={styles.playerCard}>
@@ -17,13 +19,13 @@ const PlayerCard: React.FC<{ player: Player }> = ({ player }) => (
 const styles = StyleSheet.create({
   playerCard: {
     backgroundColor: colors.card,
-    padding: 12,
+    padding: PADDING.card,
     borderRadius: 8,
     marginBottom: 10,
   },
   playerName: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: FONT_SIZES.skillCategoryTitle,
     marginBottom: 4,
     color: colors.primary,
   },

@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 import { Player } from '../types/Player';
 import { colors } from '../styles/colors';
 import { Picker } from '@react-native-picker/picker';
 import { BLOOD_BOWL_RACES, RACE_POSITIONS } from '../types/races';
-import { SKILL_CATEGORIES } from '../types/skills';
+import SkillsModal from '../components/SkillsModal';
+import { FONT_SIZES } from '../styles/typography';
+import { PADDING } from '../styles/layout';
 
 interface AddPlayerScreenProps {
   onAddPlayer: (player: Player) => void;
@@ -36,12 +38,6 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
     } else {
       setLevel('');
     }
-  };
-
-  const handleSkillToggle = (skill: string) => {
-    setSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    );
   };
 
   const handleSubmit = () => {
@@ -100,36 +96,15 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
       <TextInput style={styles.input} placeholder="Value" value={value} onChangeText={setValue} keyboardType="numeric" placeholderTextColor={colors.text} />
       <Button title="Add Player" onPress={handleSubmit} color={colors.primary} />
 
-      <Modal visible={skillsModalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Select Skills</Text>
-          <ScrollView>
-            {SKILL_CATEGORIES.map((cat) => (
-              <View key={cat.category} style={styles.skillCategory}>
-                <Text style={styles.skillCategoryTitle}>{cat.category}</Text>
-                {cat.skills.map((skill) => (
-                  <TouchableOpacity
-                    key={skill}
-                    style={styles.checkboxRow}
-                    onPress={() => handleSkillToggle(skill)}
-                  >
-                    <View style={styles.checkbox}>
-                      {skills.includes(skill) && <View style={styles.checkboxChecked} />}
-                    </View>
-                    <Text style={styles.checkboxLabel}>{skill}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            ))}
-          </ScrollView>
-          <Button title="Done" onPress={() => setSkillsModalVisible(false)} color={colors.primary} />
-        </View>
-      </Modal>
+      <SkillsModal
+        visible={skillsModalVisible}
+        selectedSkills={skills}
+        onSkillsChange={setSkills}
+        onClose={() => setSkillsModalVisible(false)}
+      />
     </View>
   );
 };
-
-const CHECKBOX_SIZE = 22;
 
 const styles = StyleSheet.create({
   container: {
@@ -137,10 +112,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: PADDING.container,
   },
   title: {
-    fontSize: 32,
+    fontSize: FONT_SIZES.title,
     fontWeight: 'bold',
     marginBottom: 16,
     color: colors.text,
@@ -150,9 +125,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 6,
-    padding: 8,
+    padding: PADDING.input,
     marginBottom: 12,
-    fontSize: 16,
+    fontSize: FONT_SIZES.input,
     color: colors.text,
     backgroundColor: colors.card,
   },
@@ -171,54 +146,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
   },
   pickerItem: {
-    color: colors.text,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: 24,
-    paddingTop: 48,
-  },
-  modalTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 24,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  skillCategory: {
-    marginBottom: 24,
-  },
-  skillCategoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: colors.primary,
-  },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  checkbox: {
-    width: CHECKBOX_SIZE,
-    height: CHECKBOX_SIZE,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderRadius: 4,
-    marginRight: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.card,
-  },
-  checkboxChecked: {
-    width: CHECKBOX_SIZE - 8,
-    height: CHECKBOX_SIZE - 8,
-    backgroundColor: colors.primary,
-    borderRadius: 2,
-  },
-  checkboxLabel: {
-    fontSize: 16,
     color: colors.text,
   },
 });
