@@ -1,38 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Player } from '../types/Player';
 import { useTheme } from '../contexts/ThemeContext';
 import { FONT_SIZES } from '../styles/typography';
 import { PADDING } from '../styles/layout';
 import { BUTTON_HEIGHT, BUTTON_BORDER_RADIUS, BUTTON_PADDING_HORIZONTAL, BUTTON_PADDING_VERTICAL } from '../styles/forms';
+import BidModal from './BidModal';
 
 interface PlayerCardProps {
   player: Player;
-  onBid?: (playerId: string) => void;
+  onBid?: (playerId: string, bidAmount: number) => void;
 }
 
 const PlayerCard: React.FC<PlayerCardProps> = ({ player, onBid }) => {
   const { theme } = useTheme();
+  const [bidModalVisible, setBidModalVisible] = useState(false);
 
   const handleBid = () => {
-    Alert.alert(
-      'Place Bid',
-      `Place an anonymous bid on ${player.name}?`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Place Bid',
-          onPress: () => {
-            if (onBid) {
-              onBid(player.name); // Using name as ID for now
-            }
-          },
-        },
-      ]
-    );
+    setBidModalVisible(true);
+  };
+
+  const handlePlaceBid = (playerId: string, bidAmount: number) => {
+    if (onBid) {
+      onBid(playerId, bidAmount);
+    }
+  };
+
+  const getBidButtonText = () => {
+    if (player.hasUserBid) {
+      return player.userBidAmount ? `Update Bid (${player.userBidAmount})` : 'Update Bid';
+    }
+    return 'Place Bid';
+  };
+
+  const handleCloseModal = () => {
+    setBidModalVisible(false);
   };
 
   return (
@@ -61,12 +63,21 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onBid }) => {
           }
         ]}
         onPress={handleBid}
-        disabled={player.hasUserBid}
       >
         <Text style={[styles.bidButtonText, { color: theme.card }]}>
-          {player.hasUserBid ? 'Bid Placed' : 'Place Bid'}
+          {getBidButtonText()}
         </Text>
       </TouchableOpacity>
+
+      <BidModal
+        visible={bidModalVisible}
+        onClose={handleCloseModal}
+        onPlaceBid={handlePlaceBid}
+        playerName={player.name}
+        playerId={player.name} // Using name as ID for now
+        existingBid={player.userBidAmount}
+        isUpdate={player.hasUserBid}
+      />
     </View>
   );
 };

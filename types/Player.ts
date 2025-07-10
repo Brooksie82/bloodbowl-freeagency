@@ -7,4 +7,5 @@ export interface Player {
   value: string;
   bidCount?: number;
   hasUserBid?: boolean;
+  userBidAmount?: number;
 } 

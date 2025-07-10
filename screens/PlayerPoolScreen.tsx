@@ -16,6 +16,7 @@ interface PlayerPoolScreenProps {
 const PlayerPoolScreen: React.FC<PlayerPoolScreenProps> = ({ players }) => {
   const { theme } = useTheme();
   const [filtersVisible, setFiltersVisible] = useState(false);
+  const [playersWithBids, setPlayersWithBids] = useState<Player[]>(players);
   const [filters, setFilters] = useState<PlayerFiltersType>({
     name: '',
     race: '',
@@ -25,10 +26,30 @@ const PlayerPoolScreen: React.FC<PlayerPoolScreenProps> = ({ players }) => {
     maxValue: '',
   });
 
+  // Update players when the prop changes
+  React.useEffect(() => {
+    setPlayersWithBids(players);
+  }, [players]);
+
+  const handleBid = (playerId: string, bidAmount: number) => {
+    setPlayersWithBids(prevPlayers => 
+      prevPlayers.map(player => 
+        player.name === playerId 
+          ? {
+              ...player,
+              bidCount: player.hasUserBid ? player.bidCount : (player.bidCount || 0) + 1,
+              hasUserBid: true,
+              userBidAmount: bidAmount,
+            }
+          : player
+      )
+    );
+  };
+
   // Filter players based on current filters
   const filteredPlayers = useMemo(() => {
-    return filterPlayers(players, filters);
-  }, [players, filters]);
+    return filterPlayers(playersWithBids, filters);
+  }, [playersWithBids, filters]);
 
   const hasActiveFilters = Boolean(filters.name || filters.race || filters.position || filters.skills.length > 0 || filters.minValue || filters.maxValue);
 
@@ -67,13 +88,13 @@ const PlayerPoolScreen: React.FC<PlayerPoolScreenProps> = ({ players }) => {
       {hasActiveFilters && (
         <View style={[styles.filterStatus, { backgroundColor: theme.card }]}>
           <Text style={[styles.filterStatusText, { color: theme.textSecondary }]}>
-            {`Showing ${filteredPlayers.length} of ${players.length} players`}
+            {`Showing ${filteredPlayers.length} of ${playersWithBids.length} players`}
           </Text>
         </View>
       )}
 
       {/* Player List */}
-      {players.length === 0 ? (
+      {playersWithBids.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={[styles.emptyStateText, { color: theme.textSecondary }]}>
             No players added yet.
@@ -92,7 +113,7 @@ const PlayerPoolScreen: React.FC<PlayerPoolScreenProps> = ({ players }) => {
         <FlatList
           data={filteredPlayers}
           keyExtractor={(_, idx) => idx.toString()}
-          renderItem={({ item }) => <PlayerCard player={item} />}
+          renderItem={({ item }) => <PlayerCard player={item} onBid={handleBid} />}
           contentContainerStyle={styles.playerList}
           showsVerticalScrollIndicator={false}
         />
