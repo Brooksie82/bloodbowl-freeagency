@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: PADDING.container,
   },
+
   title: {
     fontSize: FONT_SIZES.title,
     fontWeight: 'bold',

@@ -1,0 +1,43 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a365d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d3748;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f56565;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e53e3e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="480" fill="url(#bgGradient)" stroke="#4a5568" stroke-width="8"/>
+  
+  <!-- Football helmet silhouette -->
+  <path d="M 300 400 Q 300 350 350 320 Q 400 300 450 320 Q 500 340 550 320 Q 600 300 650 320 Q 700 350 700 400 L 700 500 Q 700 550 650 580 Q 600 600 550 580 Q 500 560 450 580 Q 400 600 350 580 Q 300 550 300 500 Z" 
+        fill="url(#accentGradient)" filter="url(#shadow)"/>
+  
+  <!-- Helmet face mask -->
+  <path d="M 320 420 Q 320 400 340 390 Q 360 380 380 390 Q 400 400 420 390 Q 440 380 460 390 Q 480 400 500 390 Q 520 380 540 390 Q 560 400 580 390 Q 600 380 620 390 Q 640 400 660 390 Q 680 380 700 390 L 700 420 Q 680 430 660 420 Q 640 410 620 420 Q 600 430 580 420 Q 560 410 540 420 Q 520 430 500 420 Q 480 410 460 420 Q 440 430 420 420 Q 400 410 380 420 Q 360 430 340 420 Z" 
+        fill="#2d3748" opacity="0.8"/>
+  
+  <!-- Dollar sign symbol -->
+  <g transform="translate(512, 650)">
+    <circle cx="0" cy="0" r="80" fill="url(#accentGradient)" opacity="0.9"/>
+    <text x="0" y="25" font-family="Arial, sans-serif" font-size="60" font-weight="bold" text-anchor="middle" fill="white">$</text>
+  </g>
+  
+  <!-- "FA" text -->
+  <text x="512" y="750" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">FA</text>
+  
+  <!-- Subtle grid pattern for background -->
+  <g opacity="0.1">
+    <path d="M 200 200 L 824 200 M 200 300 L 824 300 M 200 400 L 824 400 M 200 500 L 824 500 M 200 600 L 824 600 M 200 700 L 824 700 M 200 800 L 824 800" 
+          stroke="white" stroke-width="2"/>
+    <path d="M 200 200 L 200 824 M 300 200 L 300 824 M 400 200 L 400 824 M 500 200 L 500 824 M 600 200 L 600 824 M 700 200 L 700 824 M 800 200 L 800 824" 
+          stroke="white" stroke-width="2"/>
+  </g>
+</svg> 

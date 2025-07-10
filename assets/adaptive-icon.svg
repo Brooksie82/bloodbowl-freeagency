@@ -1,0 +1,47 @@
+<svg width="108" height="108" viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a365d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d3748;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f56565;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e53e3e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f6e05e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d69e2e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="108" height="108" fill="url(#bgGradient)"/>
+  
+  <!-- Safe area circle for adaptive icon -->
+  <circle cx="54" cy="54" r="40" fill="url(#bgGradient)" stroke="#4a5568" stroke-width="2"/>
+  
+  <!-- Football helmet -->
+  <g transform="translate(54, 40)">
+    <path d="M -25 15 Q -25 8 -17 4 Q -8 0 0 4 Q 8 0 17 4 Q 25 8 25 15 L 25 28 Q 25 35 17 39 Q 8 43 0 39 Q -8 43 -17 39 Q -25 35 -25 28 Z" 
+          fill="url(#accentGradient)" filter="url(#shadow)"/>
+    
+    <!-- Helmet face mask -->
+    <path d="M -20 18 Q -20 15 -17 13 Q -13 11 -8 13 Q -4 15 0 13 Q 4 11 8 13 Q 13 15 17 13 Q 20 11 25 13 L 25 18 Q 20 20 17 18 Q 13 16 8 18 Q 4 20 0 18 Q -4 16 -8 18 Q -13 20 -17 18 Z" 
+          fill="#2d3748" opacity="0.8"/>
+    
+    <!-- Helmet stripe -->
+    <rect x="-25" y="22" width="50" height="2" fill="url(#goldGradient)" opacity="0.8"/>
+  </g>
+  
+  <!-- Dollar sign symbol -->
+  <g transform="translate(54, 65)">
+    <circle cx="0" cy="0" r="12" fill="url(#accentGradient)" opacity="0.9"/>
+    <text x="0" y="4" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">$</text>
+  </g>
+  
+  <!-- "FA" text -->
+  <text x="54" y="85" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="white">FA</text>
+</svg> 
