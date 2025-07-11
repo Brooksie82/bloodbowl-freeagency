@@ -18,34 +18,25 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
   const [name, setName] = useState('');
   const [race, setRace] = useState(BLOOD_BOWL_RACES[0]);
   const [position, setPosition] = useState(RACE_POSITIONS[BLOOD_BOWL_RACES[0]][0]);
-  const [level, setLevel] = useState('1');
   const [skills, setSkills] = useState<string[]>([]);
   const [value, setValue] = useState('');
   const [skillsModalVisible, setSkillsModalVisible] = useState(false);
 
   const positionOptions = useMemo(() => RACE_POSITIONS[race] || [], [race]);
 
+  // Calculate level based on number of skills + 1
+  const level = useMemo(() => (skills.length + 1).toString(), [skills]);
+
   React.useEffect(() => {
     setPosition(positionOptions[0] || '');
   }, [race]);
 
-  const handleLevelChange = (text: string) => {
-    let numeric = text.replace(/[^0-9]/g, '');
-    if (numeric.length > 0) {
-      let num = Math.max(1, Math.min(7, parseInt(numeric, 10)));
-      setLevel(num.toString());
-    } else {
-      setLevel('');
-    }
-  };
-
   const handleSubmit = () => {
-    if (!name || !race || !position || !level || !value) return;
+    if (!name || !race || !position || !value) return;
     onAddPlayer({ name, race, position, level, skills: skills.join(', '), value });
     setName('');
     setRace(BLOOD_BOWL_RACES[0]);
     setPosition(RACE_POSITIONS[BLOOD_BOWL_RACES[0]][0]);
-    setLevel('1');
     setSkills([]);
     setValue('');
   };
@@ -90,15 +81,7 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
             ))}
           </Picker>
         </View>
-        <TextInput
-          style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]}
-          placeholder="Level (1-7)"
-          value={level}
-          onChangeText={handleLevelChange}
-          placeholderTextColor={theme.textSecondary}
-          keyboardType="numeric"
-          maxLength={1}
-        />
+
         <TouchableOpacity 
           style={[styles.input, styles.skillsInput, { backgroundColor: theme.background, borderColor: theme.border }]} 
           onPress={() => setSkillsModalVisible(true)}
@@ -107,6 +90,9 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
             {skills.length ? skills.join(', ') : 'Select Skills'}
           </Text>
         </TouchableOpacity>
+        <Text style={[styles.levelDisplay, { color: theme.textSecondary }]}>
+          Level: {level} (based on {skills.length} skill{skills.length !== 1 ? 's' : ''})
+        </Text>
         <TextInput 
           style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]} 
           placeholder="Value" 
@@ -202,6 +188,12 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.input,
     fontWeight: 'bold',
     letterSpacing: 1,
+  },
+  levelDisplay: {
+    fontSize: FONT_SIZES.checkboxLabel,
+    textAlign: 'center',
+    marginBottom: 18,
+    fontStyle: 'italic',
   },
 });
 

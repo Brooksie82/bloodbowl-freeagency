@@ -47,11 +47,15 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
   }, [visible, slideAnim]);
 
   const handleSkillToggle = (skill: string) => {
-    onSkillsChange(
-      selectedSkills.includes(skill)
-        ? selectedSkills.filter((s) => s !== skill)
-        : [...selectedSkills, skill]
-    );
+    if (selectedSkills.includes(skill)) {
+      // Remove skill if already selected
+      onSkillsChange(selectedSkills.filter((s) => s !== skill));
+    } else {
+      // Add skill only if under the 6-skill limit
+      if (selectedSkills.length < 6) {
+        onSkillsChange([...selectedSkills, skill]);
+      }
+    }
   };
 
   const slideInTransform = {
@@ -77,6 +81,9 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
             <FontAwesome name="arrow-left" size={20} color={theme.text} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: theme.text }]}>Select Skills</Text>
+          <Text style={[styles.skillCount, { color: selectedSkills.length >= 6 ? theme.error : theme.textSecondary }]}>
+            {selectedSkills.length}/6
+          </Text>
         </View>
 
         {/* Skills Content */}
@@ -84,23 +91,31 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
           {SKILL_CATEGORIES.map((cat) => (
             <View key={cat.category} style={styles.skillCategory}>
               <Text style={[styles.skillCategoryTitle, { color: theme.accent }]}>{cat.category}</Text>
-              {cat.skills.map((skill) => (
-                <TouchableOpacity
-                  key={skill}
-                  style={styles.checkboxRow}
-                  onPress={() => handleSkillToggle(skill)}
-                >
-                  <View style={[styles.checkbox, { 
-                    borderColor: theme.accent, 
-                    backgroundColor: theme.card 
-                  }]}>
-                    {selectedSkills.includes(skill) && (
-                      <FontAwesome name="check" size={CHECKBOX_SIZE - 10} color={theme.accent} />
-                    )}
-                  </View>
-                  <Text style={[styles.checkboxLabel, { color: theme.text }]}>{skill}</Text>
-                </TouchableOpacity>
-              ))}
+              {cat.skills.map((skill) => {
+                const isSelected = selectedSkills.includes(skill);
+                const isDisabled = !isSelected && selectedSkills.length >= 6;
+                
+                return (
+                  <TouchableOpacity
+                    key={skill}
+                    style={[styles.checkboxRow, isDisabled && styles.disabledRow]}
+                    onPress={() => handleSkillToggle(skill)}
+                    disabled={isDisabled}
+                  >
+                    <View style={[styles.checkbox, { 
+                      borderColor: isDisabled ? theme.border : theme.accent, 
+                      backgroundColor: theme.card 
+                    }]}>
+                      {isSelected && (
+                        <FontAwesome name="check" size={CHECKBOX_SIZE - 10} color={theme.accent} />
+                      )}
+                    </View>
+                    <Text style={[styles.checkboxLabel, { 
+                      color: isDisabled ? theme.textSecondary : theme.text 
+                    }]}>{skill}</Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           ))}
         </ScrollView>
@@ -144,6 +159,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
   },
+  skillCount: {
+    fontSize: FONT_SIZES.modalTitle,
+    fontWeight: 'bold',
+  },
   content: {
     flex: 1,
     padding: PADDING.container,
@@ -160,6 +179,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  disabledRow: {
+    opacity: 0.5,
   },
   checkbox: {
     width: CHECKBOX_SIZE,
