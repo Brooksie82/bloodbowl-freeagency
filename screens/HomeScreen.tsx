@@ -8,42 +8,8 @@ import ThemeSelector from '../components/ThemeSelector';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
-  const [themeModalVisible, setThemeModalVisible] = useState(false);
-  const [slideAnim] = useState(new Animated.Value(0));
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    if (themeModalVisible) {
-      setIsAnimating(true);
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => {
-        setIsAnimating(false);
-      });
-    } else {
-      setIsAnimating(true);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => {
-        setIsAnimating(false);
-      });
-    }
-  }, [themeModalVisible, slideAnim]);
-
-  const slideInTransform = {
-    transform: [
-      {
-        translateX: slideAnim.interpolate({
-          inputRange: [0, 1],
-          outputRange: [400, 0],
-        }),
-      },
-    ],
-  };
+  // Remove the themeButton TouchableOpacity and the themeModalVisible, slideAnim, isAnimating, and all modal/sidebar logic.
+  // Only keep the main title, subtitle, and layout for HomeScreen.
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -52,30 +18,8 @@ const HomeScreen = () => {
         Manage your player pool and track free agents
       </Text>
       
-      <TouchableOpacity
-        style={[styles.themeButton, { backgroundColor: theme.card, borderColor: theme.border }]}
-        onPress={() => setThemeModalVisible(true)}
-      >
-        <FontAwesome name="paint-brush" size={20} color={theme.accent} />
-        <Text style={[styles.themeButtonText, { color: theme.text, marginLeft: 8 }]}>Customize Theme</Text>
-      </TouchableOpacity>
-
       {/* Theme Modal with Slide Animation */}
-      {(themeModalVisible || isAnimating) && (
-        <View style={styles.overlay}>
-          <Animated.View style={[styles.sidebar, { backgroundColor: theme.background }, slideInTransform]}>
-            <View style={[styles.header, { borderBottomColor: theme.border }]}>
-              <TouchableOpacity onPress={() => setThemeModalVisible(false)} style={styles.backButton}>
-                <FontAwesome name="arrow-left" size={20} color={theme.text} />
-              </TouchableOpacity>
-              <Text style={[styles.headerTitle, { color: theme.text }]}>Theme Settings</Text>
-            </View>
-            <View style={styles.content}>
-              <ThemeSelector />
-            </View>
-          </Animated.View>
-        </View>
-      )}
+      {/* The theme picker button and modal are removed from the Home screen. */}
     </View>
   );
 };

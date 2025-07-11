@@ -346,7 +346,6 @@ const styles = StyleSheet.create({
     width: '85%',
     height: '100%',
     boxShadow: '-2px 0 3.84px rgba(0, 0, 0, 0.25)',
-    elevation: 5,
   },
   header: {
     flexDirection: 'row',
