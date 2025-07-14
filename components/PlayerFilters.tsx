@@ -36,9 +36,11 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
   const [skillsSlideAnim] = useState(new Animated.Value(0));
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSkillsAnimating, setIsSkillsAnimating] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   React.useEffect(() => {
     if (isVisible) {
+      setHasInteracted(true);
       setIsAnimating(true);
       Animated.timing(slideAnim, {
         toValue: 1,
@@ -47,7 +49,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
       }).start(() => {
         setIsAnimating(false);
       });
-    } else {
+    } else if (hasInteracted) {
       setIsAnimating(true);
       Animated.timing(slideAnim, {
         toValue: 0,
@@ -57,7 +59,9 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
         setIsAnimating(false);
       });
     }
-  }, [isVisible, slideAnim]);
+    // Only run when isVisible changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
 
   React.useEffect(() => {
     if (skillsModalVisible) {
@@ -120,8 +124,8 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
     ],
   };
 
-  // Only render if visible or animating
-  if (!isVisible && !isAnimating) return null;
+  // Only render if visible or animating and hasInteracted
+  if (!(hasInteracted && (isVisible || isAnimating))) return null;
 
   return (
     <View style={styles.overlay}>

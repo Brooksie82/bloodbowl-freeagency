@@ -23,9 +23,11 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
   const { theme } = useTheme();
   const [slideAnim] = useState(new Animated.Value(0));
   const [isAnimating, setIsAnimating] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     if (visible) {
+      setHasInteracted(true);
       setIsAnimating(true);
       Animated.timing(slideAnim, {
         toValue: 1,
@@ -34,7 +36,7 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
       }).start(() => {
         setIsAnimating(false);
       });
-    } else {
+    } else if (hasInteracted) {
       setIsAnimating(true);
       Animated.timing(slideAnim, {
         toValue: 0,
@@ -44,7 +46,9 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
         setIsAnimating(false);
       });
     }
-  }, [visible, slideAnim]);
+    // Only run when visible changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
   const handleSkillToggle = (skill: string) => {
     if (selectedSkills.includes(skill)) {
@@ -69,8 +73,8 @@ const SkillsModal: React.FC<SkillsModalProps> = ({
     ],
   };
 
-  // Only render if visible or animating
-  if (!visible && !isAnimating) return null;
+  // Only render if visible or animating and hasInteracted
+  if (!(hasInteracted && (visible || isAnimating))) return null;
 
   return (
     <View style={styles.overlay}>
@@ -138,9 +142,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: '85%',
+    width: '100%', // changed from '85%'
     height: '100%',
-    boxShadow: '-2px 0 3.84px rgba(0, 0, 0, 0.25)',
+    // Remove boxShadow and borderRadius for full screen
   },
   header: {
     flexDirection: 'row',

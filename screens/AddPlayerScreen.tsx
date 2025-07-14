@@ -43,78 +43,73 @@ const AddPlayerScreen: React.FC<AddPlayerScreenProps> = ({ onAddPlayer }) => {
 
   return (
     <View style={[styles.screen, { backgroundColor: theme.background }]}> 
-      <View style={[styles.card, {
-        backgroundColor: theme.card,
-        shadowColor: theme.dominant,
-      }]}> 
-        <Text style={[styles.title, { color: theme.accent }]}>Add Player</Text>
-        <TextInput 
-          style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]} 
-          placeholder="Name" 
-          value={name} 
-          onChangeText={setName} 
-          placeholderTextColor={theme.textSecondary} 
-        />
-        <View style={[styles.pickerWrapper, { backgroundColor: theme.background, borderColor: theme.border }]}> 
-          <Picker
-            selectedValue={race}
-            onValueChange={setRace}
-            style={[styles.picker, { color: theme.text }]}
-            itemStyle={[styles.pickerItem, { color: theme.text }]}
-            dropdownIconColor={theme.accent}
-          >
-            {BLOOD_BOWL_RACES.map((r) => (
-              <Picker.Item key={r} label={r} value={r} />
-            ))}
-          </Picker>
-        </View>
-        <View style={[styles.pickerWrapper, { backgroundColor: theme.background, borderColor: theme.border }]}> 
-          <Picker
-            selectedValue={position}
-            onValueChange={setPosition}
-            style={[styles.picker, { color: theme.text }]}
-            itemStyle={[styles.pickerItem, { color: theme.text }]}
-            dropdownIconColor={theme.accent}
-          >
-            {positionOptions.map((p) => (
-              <Picker.Item key={p} label={p} value={p} />
-            ))}
-          </Picker>
-        </View>
-
-        <TouchableOpacity 
-          style={[styles.input, styles.skillsInput, { backgroundColor: theme.background, borderColor: theme.border }]} 
-          onPress={() => setSkillsModalVisible(true)}
+      <Text style={[styles.title, { color: theme.accent }]}>Add Player</Text>
+      <TextInput 
+        style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]} 
+        placeholder="Name" 
+        value={name} 
+        onChangeText={setName} 
+        placeholderTextColor={theme.textSecondary} 
+      />
+      <View style={[styles.pickerWrapper, { backgroundColor: theme.background, borderColor: theme.border }]}> 
+        <Picker
+          selectedValue={race}
+          onValueChange={setRace}
+          style={[styles.picker, { color: theme.text }]}
+          itemStyle={[styles.pickerItem, { color: theme.text }]}
+          dropdownIconColor={theme.accent}
         >
-          <Text style={{ color: skills.length ? theme.text : theme.textSecondary }}>
-            {skills.length ? skills.join(', ') : 'Select Skills'}
-          </Text>
-        </TouchableOpacity>
-        <Text style={[styles.levelDisplay, { color: theme.textSecondary }]}>
-          Level: {level} (based on {skills.length} skill{skills.length !== 1 ? 's' : ''})
-        </Text>
-        <TextInput 
-          style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]} 
-          placeholder="Value" 
-          value={value} 
-          onChangeText={setValue} 
-          keyboardType="numeric" 
-          placeholderTextColor={theme.textSecondary} 
-        />
-        <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: theme.accent }]}
-          onPress={handleSubmit}
-          activeOpacity={0.85}
-        >
-          <Text style={[styles.addButtonText, { color: theme.card }]}>Add Player</Text>
-        </TouchableOpacity>
-        <SkillsModal
-          visible={skillsModalVisible}
-          selectedSkills={skills}
-          onSkillsChange={setSkills}
-          onClose={() => setSkillsModalVisible(false)}
-        />
+          {BLOOD_BOWL_RACES.map((r) => (
+            <Picker.Item key={r} label={r} value={r} />
+          ))}
+        </Picker>
       </View>
+      <View style={[styles.pickerWrapper, { backgroundColor: theme.background, borderColor: theme.border }]}> 
+        <Picker
+          selectedValue={position}
+          onValueChange={setPosition}
+          style={[styles.picker, { color: theme.text }]}
+          itemStyle={[styles.pickerItem, { color: theme.text }]}
+          dropdownIconColor={theme.accent}
+        >
+          {positionOptions.map((p) => (
+            <Picker.Item key={p} label={p} value={p} />
+          ))}
+        </Picker>
+      </View>
+
+      <TouchableOpacity 
+        style={[styles.input, styles.skillsInput, { backgroundColor: theme.background, borderColor: theme.border }]} 
+        onPress={() => setSkillsModalVisible(true)}
+      >
+        <Text style={{ color: skills.length ? theme.text : theme.textSecondary }}>
+          {skills.length ? skills.join(', ') : 'Select Skills'}
+        </Text>
+      </TouchableOpacity>
+      <Text style={[styles.levelDisplay, { color: theme.textSecondary }]}>
+        Level: {level} (based on {skills.length} skill{skills.length !== 1 ? 's' : ''})
+      </Text>
+      <TextInput 
+        style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]} 
+        placeholder="Value" 
+        value={value} 
+        onChangeText={setValue} 
+        keyboardType="numeric" 
+        placeholderTextColor={theme.textSecondary} 
+      />
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor: theme.accent }]}
+        onPress={handleSubmit}
+        activeOpacity={0.85}
+      >
+        <Text style={[styles.addButtonText, { color: theme.card }]}>Add Player</Text>
+      </TouchableOpacity>
+      <SkillsModal
+        visible={skillsModalVisible}
+        selectedSkills={skills}
+        onSkillsChange={setSkills}
+        onClose={() => setSkillsModalVisible(false)}
+      />
     </View>
   );
 };
