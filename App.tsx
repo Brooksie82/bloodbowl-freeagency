@@ -16,12 +16,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import ThemeSelector from './components/ThemeSelector';
 import UserSettingsScreen from './screens/UserSettingsScreen';
+import { UserProvider, useUser } from './contexts/UserContext';
+import AdminScreen from './screens/AdminScreen';
+import { UserRole } from './types/User';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const MainTabs = ({ players, handleAddPlayer }: any) => {
   const { theme } = useTheme();
+  const { user } = useUser();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -34,6 +38,9 @@ const MainTabs = ({ players, handleAddPlayer }: any) => {
                 resizeMode="cover"
               />
             );
+          }
+          if (route.name === 'Admin') {
+            return <FontAwesome name="shield" size={22} color={color} style={{ marginBottom: -2 }} />;
           }
           let iconName: string;
           if (route.name === 'Home') {
@@ -79,6 +86,9 @@ const MainTabs = ({ players, handleAddPlayer }: any) => {
         {() => <AddPlayerScreen onAddPlayer={handleAddPlayer} />}
       </Tab.Screen>
       <Tab.Screen name="Account" component={UserSettingsScreen} />
+      {user && user.role === UserRole.AdminUser && (
+        <Tab.Screen name="Admin" component={AdminScreen} />
+      )}
     </Tab.Navigator>
   );
 };
@@ -99,6 +109,7 @@ const AppContent = () => {
         <Stack.Screen name="MainTabs">
           {() => <MainTabs players={players} handleAddPlayer={handleAddPlayer} />}
         </Stack.Screen>
+        <Stack.Screen name="Admin" component={AdminScreen} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
@@ -108,7 +119,9 @@ const AppContent = () => {
 export default function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <UserProvider>
+        <AppContent />
+      </UserProvider>
     </ThemeProvider>
   );
 }

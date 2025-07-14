@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserRole, User } from '../types/User';
 
 const LoginScreen = ({ navigation }: any) => {
   const [coachName, setCoachName] = useState('');
@@ -9,7 +10,15 @@ const LoginScreen = ({ navigation }: any) => {
   const handleLogin = async () => {
     // Mock login always successful
     try {
-      await AsyncStorage.setItem('session', JSON.stringify({ coachName }));
+      // Randomly assign a role for testing
+      const roles = [UserRole.User, UserRole.AdminUser];
+      const randomRole = roles[Math.floor(Math.random() * roles.length)];
+      const user: User = {
+        id: coachName,
+        username: coachName,
+        role: randomRole,
+      };
+      await AsyncStorage.setItem('session', JSON.stringify(user));
       navigation.navigate('MainTabs');
     } catch (e) {
       Alert.alert('Error', 'Failed to save session.');

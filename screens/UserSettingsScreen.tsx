@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemeSelector from '../components/ThemeSelector';
+import { useUser } from '../contexts/UserContext';
+import { UserRole } from '../types/User';
 
 const UserSettingsScreen = ({ navigation }: any) => {
   const [themeModalVisible, setThemeModalVisible] = useState(false);
@@ -11,6 +13,7 @@ const UserSettingsScreen = ({ navigation }: any) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const { theme } = useTheme();
+  const { user } = useUser();
 
   useEffect(() => {
     if (themeModalVisible) {
@@ -56,6 +59,11 @@ const UserSettingsScreen = ({ navigation }: any) => {
   return (
     <View style={styles.accountContainer}>
       <Text style={styles.accountTitle}>Account Settings</Text>
+      {user && (
+        <Text style={{ fontSize: 18, color: theme.textSecondary, marginBottom: 16 }}>
+          Role: {user.role}
+        </Text>
+      )}
       <TouchableOpacity style={styles.accountItem} onPress={handleLogout}>
         <Text style={styles.accountItemText}>Log Out</Text>
       </TouchableOpacity>
